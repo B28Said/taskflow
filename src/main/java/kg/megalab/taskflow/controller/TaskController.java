@@ -1,12 +1,15 @@
 package kg.megalab.taskflow.controller;
 
-import kg.megalab.taskflow.model.Task;
-import kg.megalab.taskflow.model.TaskStatus;
+import kg.megalab.taskflow.dto.TaskCreateRequest;
+import kg.megalab.taskflow.dto.TaskUpdateRequest;
+import kg.megalab.taskflow.entity.Task;
+import kg.megalab.taskflow.entity.TaskStatus;
 import kg.megalab.taskflow.service.TaskService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import kg.megalab.taskflow.dto.TaskResponse;
 
 import java.net.URI;
 import java.util.List;
@@ -23,7 +26,7 @@ public class TaskController {
 
 
     @GetMapping
-    public List<Task> findAll(
+    public List<TaskResponse> findAll(
             @RequestParam(required = false) TaskStatus status,
             @RequestParam(required = false) String search) {
 
@@ -32,25 +35,25 @@ public class TaskController {
 
 
     @PostMapping
-    public ResponseEntity<Task> create(@RequestBody Task task){
-    Task created = taskService.create(task);
+    public ResponseEntity<TaskResponse> create(@RequestBody TaskCreateRequest task){
+        TaskResponse created = taskService.create(task);
 
     URI location = ServletUriComponentsBuilder
             .fromCurrentRequest()
             .path("/{id}")
-            .buildAndExpand(created.getId())
+            .buildAndExpand(created.id())
             .toUri();
     return ResponseEntity.created(location).body(created);
     }
 
     @GetMapping("/{id}")
-    public Task findById(@PathVariable Long id) {
+    public TaskResponse findById(@PathVariable Long id) {
         return taskService.findById(id);
     }
 
 
     @PutMapping("/{id}")
-    public Task update(@PathVariable Long id, @RequestBody Task changes) {
+    public TaskResponse update(@PathVariable Long id, @RequestBody TaskUpdateRequest changes) {
         return taskService.update(id, changes);
     }
 

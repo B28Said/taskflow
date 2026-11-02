@@ -1,4 +1,4 @@
-package kg.megalab.taskflow.model;
+package kg.megalab.taskflow.entity;
 
 import java.time.LocalDateTime;
 

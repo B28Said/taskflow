@@ -1,6 +1,6 @@
 package kg.megalab.taskflow.repository;
 
-import kg.megalab.taskflow.model.Task;
+import kg.megalab.taskflow.entity.Task;
 
 import java.util.List;
 import java.util.Optional;
