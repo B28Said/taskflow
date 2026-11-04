@@ -1,6 +1,7 @@
 package kg.megalab.taskflow.entity;
 
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public class Task {
 
@@ -9,6 +10,9 @@ public class Task {
     private String description;
     private TaskStatus status;
     private LocalDateTime createdAt;
+    private LocalDate deadline;
+    private String assignee;
+
 
     public Task(){
     }
@@ -53,4 +57,24 @@ public class Task {
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
+
+
+
+
+    public LocalDate getDeadline() {
+        return deadline;
+    }
+
+    public void setDeadline(LocalDate deadline) {
+        this.deadline = deadline;
+    }
+
+    public String getAssignee() {
+        return assignee;
+    }
+
+    public void setAssignee(String assignee) {
+        this.assignee = assignee;
+    }
+
 }

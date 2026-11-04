@@ -2,6 +2,8 @@
 package kg.megalab.taskflow.dto;
 
 import kg.megalab.taskflow.entity.TaskStatus;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public record TaskResponse(
@@ -9,6 +11,8 @@ public record TaskResponse(
         String title,
         String description,
         TaskStatus status,
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+        LocalDate deadline,
+        String assignee
 ) {
 }

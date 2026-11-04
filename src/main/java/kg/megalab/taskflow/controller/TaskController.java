@@ -2,7 +2,6 @@ package kg.megalab.taskflow.controller;
 
 import kg.megalab.taskflow.dto.TaskCreateRequest;
 import kg.megalab.taskflow.dto.TaskUpdateRequest;
-import kg.megalab.taskflow.entity.Task;
 import kg.megalab.taskflow.entity.TaskStatus;
 import kg.megalab.taskflow.service.TaskService;
 import org.springframework.http.HttpStatus;
@@ -13,6 +12,7 @@ import kg.megalab.taskflow.dto.TaskResponse;
 
 import java.net.URI;
 import java.util.List;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/tasks")
@@ -35,8 +35,8 @@ public class TaskController {
 
 
     @PostMapping
-    public ResponseEntity<TaskResponse> create(@RequestBody TaskCreateRequest task){
-        TaskResponse created = taskService.create(task);
+    public ResponseEntity<TaskResponse> create( @Valid @RequestBody TaskCreateRequest request){
+        TaskResponse created = taskService.create(request);
 
     URI location = ServletUriComponentsBuilder
             .fromCurrentRequest()
@@ -53,7 +53,7 @@ public class TaskController {
 
 
     @PutMapping("/{id}")
-    public TaskResponse update(@PathVariable Long id, @RequestBody TaskUpdateRequest changes) {
+    public TaskResponse update(@PathVariable Long id, @Valid @RequestBody TaskUpdateRequest changes) {
         return taskService.update(id, changes);
     }
 
