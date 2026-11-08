@@ -9,6 +9,7 @@ import kg.megalab.taskflow.repository.TaskRepository;
 import org.springframework.stereotype.Service;
 import kg.megalab.taskflow.mapper.TaskMapper;
 import kg.megalab.taskflow.dto.TaskUpdateRequest;
+import kg.megalab.taskflow.exception.BusinessRuleException;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -60,13 +61,30 @@ public class TaskService {
     }
 
 
+
     public TaskResponse update(Long id, TaskUpdateRequest request) {
+
         Task task = getTask(id);
+
+        if (task.getStatus().isFinal()) {
+            throw new BusinessRuleException(
+                    "Задачу в статусе " + task.getStatus()
+                            + " нельзя изменить"
+            );
+        }
+
+        if (!task.getStatus().canTransitionTo(request.status())) {
+            throw new BusinessRuleException(
+                    "Недопустимый переход статуса: "
+                            + task.getStatus() + " → " + request.status()
+            );
+        }
 
         taskMapper.updateEntity(task, request);
 
         return taskMapper.toResponse(taskRepository.save(task));
     }
+
 
 
     public void delete(Long id) {
