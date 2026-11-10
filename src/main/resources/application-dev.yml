@@ -1,0 +1,7 @@
+logging:
+  level:
+    kg.megalab.taskflow: DEBUG
+
+taskflow:
+  limits:
+    max-active-tasks-per-assignee: 3

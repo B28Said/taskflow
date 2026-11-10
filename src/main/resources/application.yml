@@ -1,0 +1,13 @@
+
+spring:
+  application:
+    name: taskflow
+  profiles:
+    active: dev
+
+server:
+  port: 8081
+
+taskflow:
+  limits:
+    max-active-tasks-per-assignee: 10

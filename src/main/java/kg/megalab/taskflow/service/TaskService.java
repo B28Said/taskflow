@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import kg.megalab.taskflow.mapper.TaskMapper;
 import kg.megalab.taskflow.dto.TaskUpdateRequest;
 import kg.megalab.taskflow.exception.BusinessRuleException;
-
+import kg.megalab.taskflow.config.LimitsProperties;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -20,10 +20,12 @@ public class TaskService {
 
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
+    private final LimitsProperties limits;
 
-    public TaskService(TaskRepository taskRepository, TaskMapper taskMapper) {
+    public TaskService(TaskRepository taskRepository, TaskMapper taskMapper, LimitsProperties limits) {
         this.taskRepository = taskRepository;
         this.taskMapper = taskMapper;
+        this.limits = limits;
     }
 
 
@@ -47,6 +49,7 @@ public class TaskService {
     public TaskResponse create(TaskCreateRequest request) {
         Task task = taskMapper.toEntity(request);
 
+        checkAssigneeLimit(request.assignee(), null);
 
         task.setStatus(TaskStatus.NEW);
         task.setCreatedAt(LocalDateTime.now());
@@ -80,6 +83,8 @@ public class TaskService {
             );
         }
 
+        checkAssigneeLimit(request.assignee(), id);
+
         taskMapper.updateEntity(task, request);
 
         return taskMapper.toResponse(taskRepository.save(task));
@@ -102,5 +107,26 @@ public class TaskService {
                 .orElseThrow(() -> new TaskNotFoundException(id));
     }
 
+
+    private void checkAssigneeLimit(String assignee, Long excludeTaskId) {
+
+        if (assignee == null || assignee.isBlank()) {
+            return;
+        }
+
+        long active = taskRepository.findAll().stream()
+                .filter(t -> assignee.equals(t.getAssignee()))
+                .filter(t -> !t.getStatus().isFinal())
+                .filter(t -> !t.getId().equals(excludeTaskId))
+                .count();
+
+        if (active >= limits.maxActiveTasksPerAssignee()) {
+            throw new BusinessRuleException(
+                    "У исполнителя " + assignee
+                            + " уже " + active
+                            + " активных задач — это максимум"
+            );
+        }
+    }
 
 }
