@@ -2,16 +2,40 @@ package kg.megalab.taskflow.entity;
 
 import java.time.LocalDateTime;
 import java.time.LocalDate;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
 
+
+@Entity
+@Table(name = "tasks")
 public class Task {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String title;
-    private String description;
-    private TaskStatus status;
-    private LocalDateTime createdAt;
     private LocalDate deadline;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private TaskStatus status;
+
+    @Column(nullable = false, length = 100)
+    private String title;
+
+    @Column(length = 1000)
+    private String description;
+
+    @Column(length = 100)
     private String assignee;
+
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
 
 
     public Task(){

@@ -5,3 +5,10 @@ logging:
 taskflow:
   limits:
     max-active-tasks-per-assignee: 3
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
