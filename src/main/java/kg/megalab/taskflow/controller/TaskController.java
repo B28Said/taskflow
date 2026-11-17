@@ -1,6 +1,7 @@
 package kg.megalab.taskflow.controller;
 
 import kg.megalab.taskflow.dto.TaskCreateRequest;
+import kg.megalab.taskflow.dto.TaskStatsResponse;
 import kg.megalab.taskflow.dto.TaskUpdateRequest;
 import kg.megalab.taskflow.entity.TaskStatus;
 import kg.megalab.taskflow.service.TaskService;
@@ -62,6 +63,17 @@ public class TaskController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         taskService.delete(id);
+    }
+
+    @GetMapping("/overdue")
+    public List<TaskResponse> findOverdue() {
+        return taskService.findOverdue();
+    }
+
+
+    @GetMapping("/stats")
+    public TaskStatsResponse getStats() {
+        return taskService.getStats();
     }
 
 }
