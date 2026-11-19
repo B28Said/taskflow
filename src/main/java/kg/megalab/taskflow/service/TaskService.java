@@ -5,8 +5,6 @@ import kg.megalab.taskflow.entity.Task;
 import kg.megalab.taskflow.entity.TaskStatus;
 import kg.megalab.taskflow.exception.TaskNotFoundException;
 import kg.megalab.taskflow.repository.TaskRepository;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
 import kg.megalab.taskflow.mapper.TaskMapper;
 import kg.megalab.taskflow.exception.BusinessRuleException;
 import kg.megalab.taskflow.config.LimitsProperties;
@@ -16,6 +14,10 @@ import java.time.LocalDateTime;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
 @Service
 public class TaskService {
@@ -23,6 +25,10 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
     private final LimitsProperties limits;
+
+    private static final Logger log =
+            LoggerFactory.getLogger(TaskService.class);
+
 
     public TaskService(TaskRepository taskRepository, TaskMapper taskMapper, LimitsProperties limits) {
         this.taskRepository = taskRepository;
@@ -39,6 +45,7 @@ public class TaskService {
 
 
     public List<TaskResponse> findAll(TaskStatus status, String search) {
+        log.debug("Фильтры: status={}, search={}", status, search);
         boolean hasSearch = search != null && search.isBlank();
         List<Task> tasks;
                 if(status != null && hasSearch){
@@ -81,6 +88,9 @@ public class TaskService {
         task.setCreatedAt(LocalDateTime.now());
 
         Task savedTask = taskRepository.save(task);
+        log.info("Создана задача id={}, исполнитель={}",
+                savedTask.getId(),
+                savedTask.getAssignee());
 
         return taskMapper.toResponse(savedTask);
     }
@@ -111,9 +121,18 @@ public class TaskService {
 
         checkAssigneeLimit(request.assignee(), id);
 
+        TaskStatus oldStatus = task.getStatus();
         taskMapper.updateEntity(task, request);
 
-        return taskMapper.toResponse(taskRepository.save(task));
+        Task saved = taskRepository.save(task);
+
+        if (oldStatus != task.getStatus()) {
+            log.info("Задача id={}: {} -> {}",
+                    id, oldStatus, task.getStatus());
+        }
+        log.info("Обновлена задача id={}", saved.getId());
+
+        return taskMapper.toResponse(saved);
     }
 
 
@@ -124,6 +143,7 @@ public class TaskService {
         }
 
         taskRepository.deleteById(id);
+        log.info("Удалена задача id={}", id);
     }
 
 

@@ -34,3 +34,22 @@ Negative matches
 3. JmxAutoConfiguration
 Не сработала, потому что Spring Boot не нашёл настройку spring.jmx.enabled=true.
 
+TaskFlow
+
+REST API трекера задач на Spring Boot 4.
+
+## Возможности
+- CRUD задач, фильтрация и поиск, просроченные задачи и статистика
+- Валидация, единый формат ошибок ProblemDetail, бизнес-правила
+- Профили dev и prod
+
+## Стек
+Java 21, Spring Boot 4, Spring Data JPA, PostgreSQL, Maven, springdoc-openapi
+
+## Запуск
+docker run --name taskflow-db -e POSTGRES_DB=taskflow -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:17
+./mvnw spring-boot:run
+
+## Документация
+Swagger UI: http://localhost:8081/swagger-ui.html
+Коллекция Postman: postman/TaskFlow.postman_collection.json

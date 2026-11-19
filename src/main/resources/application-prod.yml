@@ -3,6 +3,9 @@ spring:
   main:
     banner-mode: off
 
+
 logging:
   level:
     kg.megalab.taskflow: INFO
+  file:
+    name: logs/taskflow.log

@@ -17,6 +17,8 @@ import org.springframework.web.context.request.ServletWebRequest;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 
@@ -27,27 +29,22 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(TaskNotFoundException.class)
-    public ProblemDetail handleNotFound(
-            TaskNotFoundException e,
-            HttpServletRequest request) {
+    public ProblemDetail handleNotFound(TaskNotFoundException e, HttpServletRequest request) {
 
         return problem(HttpStatus.NOT_FOUND, e.getMessage(), request);
     }
 
 
     @ExceptionHandler(BusinessRuleException.class)
-    public ProblemDetail handleBusinessRule(
-            BusinessRuleException e,
-            HttpServletRequest request) {
+    public ProblemDetail handleBusinessRule(BusinessRuleException e, HttpServletRequest request) {
+        log.warn("Отклонено: {}", e.getMessage());
+
 
         return problem(HttpStatus.CONFLICT, e.getMessage(), request);
     }
 
 
-    private ProblemDetail problem(
-            HttpStatus status,
-            String detail,
-            HttpServletRequest request) {
+    private ProblemDetail problem(HttpStatus status, String detail, HttpServletRequest request) {
 
         ProblemDetail problem =
                 ProblemDetail.forStatusAndDetail(status, detail);

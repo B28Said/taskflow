@@ -1,4 +1,9 @@
 
+logging:
+  level:
+    root: INFO
+
+
 spring:
   datasource:
     url: ${DB_URL:jdbc:postgresql://localhost:5432/taskflow}
